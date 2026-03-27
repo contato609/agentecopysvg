@@ -3,6 +3,8 @@ import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import LogoutButton from '@/components/LogoutButton'
 
+export const dynamic = 'force-dynamic'
+
 export default async function AppLayout({ children }: { children: React.ReactNode }) {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
