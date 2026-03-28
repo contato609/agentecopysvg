@@ -21,17 +21,29 @@ export async function middleware(request: NextRequest) {
     }
   )
 
-  const { data: { user } } = await supabase.auth.getUser()
-
   const isAuthPage = request.nextUrl.pathname.startsWith('/login')
   const isApiRoute = request.nextUrl.pathname.startsWith('/api')
 
-  if (!user && !isAuthPage && !isApiRoute) {
-    return NextResponse.redirect(new URL('/login', request.url))
-  }
+  try {
+    const { data: { user } } = await supabase.auth.getUser()
 
-  if (user && isAuthPage) {
-    return NextResponse.redirect(new URL('/', request.url))
+    if (!user && !isAuthPage && !isApiRoute) {
+      return NextResponse.redirect(new URL('/login', request.url))
+    }
+
+    if (user && isAuthPage) {
+      return NextResponse.redirect(new URL('/', request.url))
+    }
+  } catch {
+    // Sessão expirada ou token inválido — redireciona para login sem crashar
+    if (!isAuthPage && !isApiRoute) {
+      const response = NextResponse.redirect(new URL('/login', request.url))
+      // Limpa cookies de sessão expirada
+      request.cookies.getAll().forEach(cookie => {
+        if (cookie.name.startsWith('sb-')) response.cookies.delete(cookie.name)
+      })
+      return response
+    }
   }
 
   return supabaseResponse
