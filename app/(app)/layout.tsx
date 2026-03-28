@@ -39,6 +39,14 @@ export default async function AppLayout({ children }: { children: React.ReactNod
         </Link>
 
         <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+          <Link href="/copies" style={{
+            fontSize: 12, color: 'var(--text-dim)', textDecoration: 'none',
+            letterSpacing: 1, padding: '6px 14px',
+            border: '1px solid var(--border-soft)', borderRadius: 8,
+            background: 'var(--surface)',
+          }}>
+            Biblioteca de Copys
+          </Link>
           <span style={{ fontSize: 12, color: 'var(--text-dim)' }}>{user.email}</span>
           <LogoutButton />
         </div>
